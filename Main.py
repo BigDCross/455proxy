@@ -4,12 +4,14 @@ import argparse
 import socket
 
 from Proxy import ProxyServer
+from HTTP_Utils import *
 
 HOST = ""
 PORT = 5006
 
 def main():
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
     s.bind((HOST, PORT))
 
     threads = []
