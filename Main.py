@@ -4,7 +4,7 @@ import argparse
 import socket
 
 from Proxy import ProxyServer
-from HTTP_Utils import *
+from HTTPMsgUtils import *
 
 HOST = ""
 PORT = 5006

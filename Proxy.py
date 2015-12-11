@@ -8,7 +8,7 @@ import sys
 import threading
 import time
 
-from HTTP_Utils import *
+from HTTPMsgUtils import *
 
 # Send this to the client initially and they will receive a page with an input box for urls
 # Make sure you prepend headers first though!
