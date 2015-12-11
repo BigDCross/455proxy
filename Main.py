@@ -6,7 +6,7 @@ import socket
 from Proxy import ProxyServer
 from HTTPMsgUtils import *
 
-HOST = ""
+HOST = "127.0.0.1"
 PORT = 5006
 
 def main():
@@ -15,6 +15,8 @@ def main():
     s.bind((HOST, PORT))
 
     threads = []
+
+    print("Proxy server starting on address: ", HOST, ":", str(PORT), sep="")
 
     Running = True
     while Running:

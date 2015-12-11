@@ -1,0 +1,17 @@
+Running:
+To test the proxy out run Main.py (using python3)
+then put in the proxy address in a browser
+
+TODO:
+- Parse argv for host, port, and other config options (easy)
+- Recv better. HTTP messages have no end-of-msg marker. You must
+    instead parse the headers (that is, until '\r\n\r\n' is found)
+    then use the Content-Length header (or handle chunked encoding)
+    to recv the rest of the message. (hard)
+- Work on parsing and building HTTP messages. There is some basic
+    functionality in HTTP_Utils. (tricky I suspect)
+- Figure out how the client is supposed to send the initial request.
+    Maybe send a page with an input box for a URL?
+- Error checking. This is super important.
+- Error checking. This is super important.
+- Did I mention error checking?
