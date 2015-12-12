@@ -6,6 +6,32 @@ import time
 # General Note: HTTP is 8 ascii all the time. Python uses unicode strings, however, so you'll
 # pretty much have to prepend 'b' (indicating bytecode ) to all strings e.g. b"\r\n"
 
+# Put utility methods here. These should not change based on message type or anything else.
+def ParseHeaders(headers):
+    lines = headers.split(b"\r\n")
+
+    headers_dict = {}
+    for h in lines:
+        l = h[0:h.find(b": ")]
+        r = h[h.find(b": ") + 2:]
+        headers_dict[l] = [r]
+
+    return headers_dict
+
+def ParseStatusLine(status):
+    s = status.split(b" ")
+
+    # If request message
+    # s[0]: request-method
+    # s[1]: request-uri
+    # s[2]: http-version
+
+    # If response message
+    # s[0]: http-version
+    # s[1]: status-code
+    # s[2]: reason-phrase
+    return s[0], s[1], s[2]
+
 # Class for parsing request messages
 class ParsedRequestMessage():
     def __init__(self, data):
@@ -26,32 +52,9 @@ class ParsedRequestMessage():
         self.status = status_and_headers[0:status_and_headers.find(b"\r\n")]
         self.headers = status_and_headers[status_and_headers.find(b"\r\n") + 2:]
         self.body = msg
-        #print(self.status)
-        #print(self.headers)
-        #print(self.body)
 
-        self.headers_dict = self.ParseHeaders(self.headers)
-        self.method, self.uri, self.http_version = self.ParseStatusLine(self.status)
-
-    def ParseHeaders(self, headers):
-        lines = headers.split(b"\r\n")
-
-        headers_dict = {}
-        for h in lines:
-            l = h[0:h.find(b": ")]
-            r = h[h.find(b": ") + 2:]
-            headers_dict[l] = [r]
-
-        return headers_dict
-
-    def ParseStatusLine(self, status):
-        splits = status.split(b" ")
-
-        method = splits[0]
-        uri = splits[1]
-        http_version = splits[2]
-
-        return method, uri, http_version
+        self.headers_dict = ParseHeaders(self.headers)
+        self.method, self.uri, self.http_version = ParseStatusLine(self.status)
 
     def GetHeaders(self):
         return self.headers
@@ -64,33 +67,6 @@ class ParsedRequestMessage():
 
     def GetStatusLineTuple(self):
         return (self.method, self.uri, self.http_version)
-
-"""
-# Status lines are different between request and response messages. Implement this in reply message.
-    def ParseStatusLine(self):
-        splits = self.status.split(b" ")
-
-        self.http_version = splits[0]
-        self.status_code = splits[1]
-        self.reason_phrase = splits[2]
-
-
-    def GetHTTPVersion(self):
-        return self.http_version
-
-    def GetStatusCode(self):
-        return self.status_code
-
-    def GetReasonPhrase(self):
-        return self.reason_phrase
-
-    def GetStatusLine(self):
-        return self.status
-
-    def GetStatusLineTuple(self):
-        return (self.http_version, self.status_code, self.reason_phrase)
-
-"""
 
 """
 # You can pull request messages from Request.txt for testing purposes

@@ -69,7 +69,9 @@ class ProxyServer(threading.Thread):
     # Rewrite, taking into account all the ways to receive an http message
     # (http://www.w3.org/Protocols/rfc2616/rfc2616-sec4.html#sec4.4)
     def RecvFrom(self, sock):
-        initial_data = sock.recv(1024)
+        data = sock.recv(1024)
+
+        #ParsedRequestMessage.
 
         return data
 
