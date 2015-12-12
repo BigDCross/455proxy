@@ -1,0 +1,52 @@
+Proxy server starting on address: 127.0.0.1:5006
+Connected to:  ('127.0.0.1', 54293)
+b'GET http://eecs.wsu.edu/ HTTP/1.1\r\nHost: eecs.wsu.edu\r\nUser-Agent: Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:42.0) Gecko/20100101 Firefox/42.0\r\nAccept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8\r\nAccept-Language: en-US,en;q=0.5\r\nAccept-Encoding: gzip, deflate\r\nDNT: 1\r\nConnection: keep-alive\r\n\r\n'
+Connected to:  ('127.0.0.1', 54294)
+b'CONNECT reddit.com:443 HTTP/1.1\r\nUser-Agent: Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:42.0) Gecko/20100101 Firefox/42.0\r\nProxy-Connection: keep-alive\r\nConnection: keep-alive\r\nHost: reddit.com:443\r\n\r\n'
+Connected to:  ('127.0.0.1', 54295)
+b'CONNECT reddit.com:443 HTTP/1.1\r\nUser-Agent: Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:42.0) Gecko/20100101 Firefox/42.0\r\nProxy-Connection: keep-alive\r\nConnection: keep-alive\r\nHost: reddit.com:443\r\n\r\n'
+Connected to:  ('127.0.0.1', 54296)
+b'CONNECT reddit.com:443 HTTP/1.1\r\nUser-Agent: Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:42.0) Gecko/20100101 Firefox/42.0\r\nProxy-Connection: keep-alive\r\nConnection: keep-alive\r\nHost: reddit.com:443\r\n\r\n'
+Connected to:  ('127.0.0.1', 54297)
+b'CONNECT reddit.com:443 HTTP/1.1\r\nUser-Agent: Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:42.0) Gecko/20100101 Firefox/42.0\r\nProxy-Connection: keep-alive\r\nConnection: keep-alive\r\nHost: reddit.com:443\r\n\r\n'
+Connected to:  ('127.0.0.1', 54298)
+b'CONNECT reddit.com:443 HTTP/1.1\r\nUser-Agent: Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:42.0) Gecko/20100101 Firefox/42.0\r\nProxy-Connection: keep-alive\r\nConnection: keep-alive\r\nHost: reddit.com:443\r\n\r\n'
+Connected to:  ('127.0.0.1', 54299)
+b'CONNECT reddit.com:443 HTTP/1.1\r\nUser-Agent: Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:42.0) Gecko/20100101 Firefox/42.0\r\nProxy-Connection: keep-alive\r\nConnection: keep-alive\r\nHost: reddit.com:443\r\n\r\n'
+Connected to:  ('127.0.0.1', 54300)
+b'CONNECT reddit.com:443 HTTP/1.1\r\nUser-Agent: Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:42.0) Gecko/20100101 Firefox/42.0\r\nProxy-Connection: keep-alive\r\nConnection: keep-alive\r\nHost: reddit.com:443\r\n\r\n'
+Connected to:  ('127.0.0.1', 54301)
+b'CONNECT reddit.com:443 HTTP/1.1\r\nUser-Agent: Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:42.0) Gecko/20100101 Firefox/42.0\r\nProxy-Connection: keep-alive\r\nConnection: keep-alive\r\nHost: reddit.com:443\r\n\r\n'
+Connected to:  ('127.0.0.1', 54302)
+b'CONNECT reddit.com:443 HTTP/1.1\r\nUser-Agent: Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:42.0) Gecko/20100101 Firefox/42.0\r\nProxy-Connection: keep-alive\r\nConnection: keep-alive\r\nHost: reddit.com:443\r\n\r\n'
+Connected to:  ('127.0.0.1', 54303)
+b'CONNECT reddit.com:443 HTTP/1.1\r\nUser-Agent: Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:42.0) Gecko/20100101 Firefox/42.0\r\nProxy-Connection: keep-alive\r\nConnection: keep-alive\r\nHost: reddit.com:443\r\n\r\n'
+Connected to:  ('127.0.0.1', 54304)
+b'GET http://www.cnn.com/ HTTP/1.1\r\nHost: www.cnn.com\r\nUser-Agent: Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:42.0) Gecko/20100101 Firefox/42.0\r\nAccept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8\r\nAccept-Language: en-US,en;q=0.5\r\nAccept-Encoding: gzip, deflate\r\nDNT: 1\r\nCookie: ug=566afa050e1c940a3c8cd14418034703; ugs=1; optimizelyEndUserId=oeu1449851397939r0.8802105047560693; optimizelySegments=%7B%22170962340%22%3A%22false%22%2C%22171657961%22%3A%22ff%22%2C%22172148679%22%3A%22none%22%2C%22172265329%22%3A%22direct%22%7D; optimizelyBuckets=%7B%7D; _dy_ses_load_seq=42740%3A1449851424836; _dy_csc_ses=t; _dy_c_exps=; s_cc=true; s_fid=2227D5ECB6E54D10-32517EA9A4D26B30; s_sq=%5B%5BB%5D%5D; __CT_Data=gpv=2&apv_49_www04=2; s_vi=[CS]v1|2B357D04051D3298-6000016280072CDE[CE]; bknx_fa=1449851402548; WRUIDC=0; _dyid=5588967319405263366; _dyfs=true; _dycst=dk.l.f.ws.fst.frv2.frs.; _dyus_8766314=0%7C0%7C1%7C0%7C0%7C0.0.1449851403632.1449851427505.23.0%7C344%7C50%7C11%7C115%7C2%7C0%7C0%7C0%7C0%7C0%7C0%7C2%7C0%7C0%7C0%7C0%7C0%7C2%7C0%7C0%7C0%7C0%7C0; _dy_geo=US.NA.US_WA.US_WA_Pullman; _dy_toffset=-2; s_ppv=65; __gads=ID=a4d1b7a09d79dfa8:T=1449851404:S=ALNI_MY7Af6Q_B2ZOJSRswYaYOvWpC9W0Q; RT=sl=2&ss=1449851396488&tt=24140&obo=0&bcn=%2F%2F36f111f7.mpstat.us%2F&sh=1449851433923%3D2%3A0%3A24140%2C1449851410878%3D1%3A0%3A14388&dm=cnn.com&si=361864e1-f11a-4ce3-939f-bec32d434eaf&r=http%3A%2F%2Fwww.cnn.com%2F&ul=1449851456431&hd=1449851456609; _cb_ls=1; _chartbeat2=BvnMonD9Co8EDdZPaM.1449851412036.1449851435323.1\r\nConnection: keep-alive\r\nCache-Control: max-age=0\r\n\r\n'
+Connected to:  ('127.0.0.1', 54305)
+b'GET http://example.com/ HTTP/1.1\r\nHost: example.com\r\nUser-Agent: Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:42.0) Gecko/20100101 Firefox/42.0\r\nAccept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8\r\nAccept-Language: en-US,en;q=0.5\r\nAccept-Encoding: gzip, deflate\r\nDNT: 1\r\nConnection: keep-alive\r\nIf-Modified-Since: Fri, 09 Aug 2013 23:54:35 GMT\r\nIf-None-Match: "359670651+gzip"\r\nCache-Control: max-age=0\r\n\r\n'
+Connected to:  ('127.0.0.1', 54306)
+Connected to:  ('127.0.0.1', 54307)
+b'CONNECT tiles.services.mozilla.com:443 HTTP/1.1\r\nUser-Agent: Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:42.0) Gecko/20100101 Firefox/42.0\r\nProxy-Connection: keep-alive\r\nConnection: keep-alive\r\nHost: tiles.services.mozilla.com:443\r\n\r\n'
+Connected to:  ('127.0.0.1', 54308)
+b'CONNECT tiles.services.mozilla.com:443 HTTP/1.1\r\nUser-Agent: Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:42.0) Gecko/20100101 Firefox/42.0\r\nProxy-Connection: keep-alive\r\nConnection: keep-alive\r\nHost: tiles.services.mozilla.com:443\r\n\r\n'
+Connected to:  ('127.0.0.1', 54309)
+b'CONNECT tiles.services.mozilla.com:443 HTTP/1.1\r\nUser-Agent: Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:42.0) Gecko/20100101 Firefox/42.0\r\nProxy-Connection: keep-alive\r\nConnection: keep-alive\r\nHost: tiles.services.mozilla.com:443\r\n\r\n'
+Connected to:  ('127.0.0.1', 54310)
+b'CONNECT tiles.services.mozilla.com:443 HTTP/1.1\r\nUser-Agent: Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:42.0) Gecko/20100101 Firefox/42.0\r\nProxy-Connection: keep-alive\r\nConnection: keep-alive\r\nHost: tiles.services.mozilla.com:443\r\n\r\n'
+Connected to:  ('127.0.0.1', 54311)
+b'CONNECT tiles.services.mozilla.com:443 HTTP/1.1\r\nUser-Agent: Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:42.0) Gecko/20100101 Firefox/42.0\r\nProxy-Connection: keep-alive\r\nConnection: keep-alive\r\nHost: tiles.services.mozilla.com:443\r\n\r\n'
+Connected to:  ('127.0.0.1', 54312)
+b'CONNECT tiles.services.mozilla.com:443 HTTP/1.1\r\nUser-Agent: Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:42.0) Gecko/20100101 Firefox/42.0\r\nProxy-Connection: keep-alive\r\nConnection: keep-alive\r\nHost: tiles.services.mozilla.com:443\r\n\r\n'
+Connected to:  ('127.0.0.1', 54313)
+b'CONNECT tiles.services.mozilla.com:443 HTTP/1.1\r\nUser-Agent: Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:42.0) Gecko/20100101 Firefox/42.0\r\nProxy-Connection: keep-alive\r\nConnection: keep-alive\r\nHost: tiles.services.mozilla.com:443\r\n\r\n'
+Connected to:  ('127.0.0.1', 54314)
+b'CONNECT tiles.services.mozilla.com:443 HTTP/1.1\r\nUser-Agent: Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:42.0) Gecko/20100101 Firefox/42.0\r\nProxy-Connection: keep-alive\r\nConnection: keep-alive\r\nHost: tiles.services.mozilla.com:443\r\n\r\n'
+Connected to:  ('127.0.0.1', 54315)
+b'CONNECT tiles.services.mozilla.com:443 HTTP/1.1\r\nUser-Agent: Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:42.0) Gecko/20100101 Firefox/42.0\r\nProxy-Connection: keep-alive\r\nConnection: keep-alive\r\nHost: tiles.services.mozilla.com:443\r\n\r\n'
+Connected to:  ('127.0.0.1', 54316)
+b'CONNECT tiles.services.mozilla.com:443 HTTP/1.1\r\nUser-Agent: Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:42.0) Gecko/20100101 Firefox/42.0\r\nProxy-Connection: keep-alive\r\nConnection: keep-alive\r\nHost: tiles.services.mozilla.com:443\r\n\r\n'
+Connected to:  ('127.0.0.1', 54317)
+b'GET http://eff.com/ HTTP/1.1\r\nHost: eff.com\r\nUser-Agent: Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:42.0) Gecko/20100101 Firefox/42.0\r\nAccept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8\r\nAccept-Language: en-US,en;q=0.5\r\nAccept-Encoding: gzip, deflate\r\nDNT: 1\r\nConnection: keep-alive\r\n\r\n'
+Connected to:  ('127.0.0.1', 54318)
+b'GET http://www.eff.com/ HTTP/1.1\r\nHost: www.eff.com\r\nUser-Agent: Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:42.0) Gecko/20100101 Firefox/42.0\r\nAccept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8\r\nAccept-Language: en-US,en;q=0.5\r\nAccept-Encoding: gzip, deflate\r\nDNT: 1\r\nConnection: keep-alive\r\n\r\n'

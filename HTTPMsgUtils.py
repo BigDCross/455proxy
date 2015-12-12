@@ -3,19 +3,8 @@
 import os
 import time
 
-# Class for building http request messages
-class RequestMsg():
-    def __init__(self):
-        pass
-
-    def AddHeader(self):
-        pass
-
-    def BuildMsg(self):
-        return self.msg
-
-# Class for parsing http messages
-class ParsedHTTPMsg():
+# Class for parsing request messages
+class ParsedRequestMessage():
     def __init__(self, data):
         self.data = data
         self.parse()
@@ -31,9 +20,6 @@ class ParsedHTTPMsg():
         except:
             msg = None
 
-        #print(status_and_headers)
-        #print(msg)
-
         self.status = status_and_headers[0:status_and_headers.find(b"\r\n")]
         self.headers = status_and_headers[status_and_headers.find(b"\r\n") + 2:]
         self.body = msg
@@ -42,8 +28,7 @@ class ParsedHTTPMsg():
         #print(self.body)
 
         self.ParseHeaders()
-
-        #print()
+        self.ParseStatusLine()
 
     def ParseHeaders(self):
         lines = self.headers.split(b"\r\n")
@@ -53,7 +38,13 @@ class ParsedHTTPMsg():
             l = h[0:h.find(b": ")]
             r = h[h.find(b": ") + 2:]
             self.headers_dict[l] = [r]
-        #print(self.headers_dict)
+
+    def ParseStatusLine(self):
+        splits = self.status.split(b" ")
+
+        self.method = splits[0]
+        self.uri = splits[1]
+        self.http_version = splits[2]
 
     def GetHeaders(self):
         return self.headers
@@ -61,12 +52,46 @@ class ParsedHTTPMsg():
     def GetHeadersDict(self):
         return self.headers_dict
 
+    def GetStatusLine(self):
+        return self.status
+
+    def GetStatusLineTuple(self):
+        return (self.method, self.uri, self.http_version)
+
 """
-req_msg = b"GET /path/file.html HTTP/1.0\r\nFrom: someuser@jmarshall.com\r\nUser-Agent: HTTPTool/1.0\r\n\r\n"
+# Status lines are different between request and response messages. Implement this in reply message.
+    def ParseStatusLine(self):
+        splits = self.status.split(b" ")
 
-reply_msg = b"HTTP/1.0 200 OK\r\nDate: Fri, 31 Dec 1999 23:59:59 GMT\r\nContent-Type: text/html\r\n\r\n"
-reply_msg += b"<html>\r\n<body>\r\n<h1>Happy New Millennium!</h1>\r\n</body>\r\n</html>"
+        self.http_version = splits[0]
+        self.status_code = splits[1]
+        self.reason_phrase = splits[2]
 
-p = ParsedHTTPMsg(req_msg)
-p = ParsedHTTPMsg(reply_msg)
+
+    def GetHTTPVersion(self):
+        return self.http_version
+
+    def GetStatusCode(self):
+        return self.status_code
+
+    def GetReasonPhrase(self):
+        return self.reason_phrase
+
+    def GetStatusLine(self):
+        return self.status
+
+    def GetStatusLineTuple(self):
+        return (self.http_version, self.status_code, self.reason_phrase)
+
+"""
+
+"""
+# You can pull request messages from Request.txt for testing purposes
+req_msg = b'GET http://eecs.wsu.edu/ HTTP/1.1\r\nHost: eecs.wsu.edu\r\nUser-Agent: Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:42.0) Gecko/20100101 Firefox/42.0\r\nAccept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8\r\nAccept-Language: en-US,en;q=0.5\r\nAccept-Encoding: gzip, deflate\r\nDNT: 1\r\nConnection: keep-alive\r\n\r\n'
+
+p = ParsedRequestMessage(req_msg)
+
+print(p.GetStatusLineTuple())
+print(p.GetHeadersDict())
+print(p.GetHeadersDict()[b"Host"])
 """

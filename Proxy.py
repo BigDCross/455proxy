@@ -10,24 +10,6 @@ import time
 
 from HTTPMsgUtils import *
 
-# Send this to the client initially and they will receive a page with an input box for urls
-# Make sure you prepend headers first though!
-Input_URL_Page = \
-b""" <!DOCTYPE html>
-<html>
-<body>
-
-<form action="url_entry">
-URL:<br>
-<input type="text" name="url">
-<br><br>
-<input type="submit">
-</form>
-
-</body>
-</html>
-"""
-
 class ProxyServer(threading.Thread):
     def __init__(self, client_sock, client_addr):
         super(ProxyServer, self).__init__()
@@ -35,21 +17,33 @@ class ProxyServer(threading.Thread):
         self.client_addr = client_addr
 
     def run(self):
+        # Procedure:
+        # Receive http request msg from browser
+        # Pull out host from request (see Hausers email for important caveat)
+        # Get address info for host
+        # Create a socket with requested host.
+        # Send request msg (possibly changed) to host
+        # Receive response message from host
+            # This is the tricky part. Need to take into account content-length, chunked transfer
+            # encoding, etc to make sure we receive the full message.
+        # Send response message to browser
+        # If chunked transfer encoding is used loop and continue receiving from host?
+        # Close connection. (Threads run method will return and thread will die)
+
         request = self.ReceiveRequest()
-        #tosend =  b"HTTP/1.1 200 OK\r\n"
-        #tosend += b"Connection: keep-alive\r\n\r\n"
-        #tosend += b"Hello!\r\n\r\n"
-        #tosend += Input_URL_Page
 
         print("Received from client: ")
         print(str(request.data))
 
-        tosend = self.GetWebPage("example.com")
+        #print(request.GetStatusLineTuple())
+        #tosend = self.GetWebPage("example.com")
+        #tosend = self.GetWebPage("eecs.wsu.edu/~hauser/cs455/index.html")
+        #tosend = self.GetWebPage(request.GetStatusLineTuple()[1])
 
-        print("Sending to client: ")
-        print(str(tosend))
+        #print("Sending to client: ")
+        #print(str(tosend))
 
-        self.SendToClient(tosend)
+        #self.SendToClient(tosend)
 
         #request = self.ReceiveRequest()
 
@@ -59,8 +53,8 @@ class ProxyServer(threading.Thread):
         self.CloseClientConnection()
 
     def ReceiveRequest(self):
-        data = self.client_sock.recv(4096)
-        request = ParsedHTTPMsg(data)
+        data = self.client_sock.recv(1024*16)
+        request = ParsedRequestMessage(data)
 
         return request
 
@@ -75,22 +69,36 @@ class ProxyServer(threading.Thread):
         #self.server_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         addrinfo = socket.getaddrinfo(addr, "http", socket.AF_INET, socket.SOCK_STREAM)
 
+        print(addrinfo)
+
         return addrinfo[0][4]
 
     def GetWebPage(self, addr):
         print("Grabbing content from: ", addr)
-        addr_info = self.GetWebAddrInfo(addr)
+        host = None
+        filename = b"/index.html"
+        if addr.find(b"/") != -1:
+            host = addr[:addr.find(b"/")]
+            filename = addr[addr.find(b"/"):]
+        else:
+            host = addr
+
+        addr_info = self.GetWebAddrInfo(host)
         self.server_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.server_sock.connect(addr_info)
 
-        tosend = b"GET /index.html HTTP/1.1\r\n"
+        tosend = b"GET "
+        tosend += str.encode(filename)
+        tosend += b" HTTP/1.1\r\n"
+
         tosend += b"HOST: "
-        tosend += str.encode(addr)
+        tosend += str.encode(host)
         tosend += b"\r\n\r\n"
-        #print(tosend)
+        print("Sending request to webaddress ", host, ":", sep="")
+        print(tosend)
         self.server_sock.send(tosend)
 
-        msg = self.server_sock.recv(4096)
+        msg = self.server_sock.recv(1024*16)
         #print(msg)
 
         return msg

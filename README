@@ -1,6 +1,6 @@
 Running:
 To test the proxy out run Main.py (using python3)
-then put in the proxy address in a browser
+then set up the appropriate proxy settings in your webbrowser
 
 TODO:
 - Parse argv for host, port, and other config options (easy)
@@ -12,6 +12,9 @@ TODO:
     functionality in HTTP_Utils. (tricky I suspect)
 - Figure out how the client is supposed to send the initial request.
     Maybe send a page with an input box for a URL?
+    (ANSWER: I should have read better. You set up your web browser to use a proxy
+     via its settings. The user will not have to manually type in url in an input box
+     or anything like that)
 - Error checking. This is super important.
 - Error checking. This is super important.
 - Did I mention error checking?
