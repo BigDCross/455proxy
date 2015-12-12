@@ -3,6 +3,9 @@
 import os
 import time
 
+# General Note: HTTP is 8 ascii all the time. Python uses unicode strings, however, so you'll
+# pretty much have to prepend 'b' (indicating bytecode ) to all strings e.g. b"\r\n"
+
 # Class for parsing request messages
 class ParsedRequestMessage():
     def __init__(self, data):
@@ -27,24 +30,28 @@ class ParsedRequestMessage():
         #print(self.headers)
         #print(self.body)
 
-        self.ParseHeaders()
-        self.ParseStatusLine()
+        self.headers_dict = self.ParseHeaders(self.headers)
+        self.method, self.uri, self.http_version = self.ParseStatusLine(self.status)
 
-    def ParseHeaders(self):
-        lines = self.headers.split(b"\r\n")
+    def ParseHeaders(self, headers):
+        lines = headers.split(b"\r\n")
 
-        self.headers_dict = {}
+        headers_dict = {}
         for h in lines:
             l = h[0:h.find(b": ")]
             r = h[h.find(b": ") + 2:]
-            self.headers_dict[l] = [r]
+            headers_dict[l] = [r]
 
-    def ParseStatusLine(self):
-        splits = self.status.split(b" ")
+        return headers_dict
 
-        self.method = splits[0]
-        self.uri = splits[1]
-        self.http_version = splits[2]
+    def ParseStatusLine(self, status):
+        splits = status.split(b" ")
+
+        method = splits[0]
+        uri = splits[1]
+        http_version = splits[2]
+
+        return method, uri, http_version
 
     def GetHeaders(self):
         return self.headers
