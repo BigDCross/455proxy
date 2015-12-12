@@ -1,0 +1,34 @@
+Dear class,
+
+
+One student pointed out this morning that her proxy server worked ok when used from home but failed for CNN when used on a WSU network. Another team just came by for help with a proxy server that fetched the CptS455 home page ok but failed with a timeout exception on the image request (even though the image is now gone from the server where it lives, the server still responds with a "not found" message which was not being received.
+
+
+Thanks to the patience of those students, we now know the cause of the problem: the new WSU firewall (since Thanksgiving break) for some reason blocks requests that have the host embedded as part of the URL. So
+
+
+GET http://www.microsoft.com/blah HTTP/1.1
+
+host:www.microsoft.com
+
+
+fails, but
+
+GET /blah HTTP/1.1
+
+
+host:www.microsoft.com 
+
+
+succeeds.
+
+The solution is to strip the http://host part from the request line in your proxy before sending it to the server.
+
+
+I am very sorry for any trouble this has caused; it's probably a good lesson to learn -- that firewalls may make networks not work as expected -- but it wasn't intended to be a lesson for this project (i.e. if I'd known about it I would have told you rather than make you suffer through it or figure it out).
+
+
+I will give an extra day to everyone to give a chance to fix this -- I think we'll all feel much better with a project that really works instead of one that exhibits broken behavior.
+
+
+-- CH

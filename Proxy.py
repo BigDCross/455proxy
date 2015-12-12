@@ -33,45 +33,73 @@ class ProxyServer(threading.Thread):
         request = self.ReceiveRequest()
 
         print("Received from client: ")
-        print(str(request.data))
+        print(str(request.GetMessage()))
 
-        #print(request.GetStatusLineTuple())
-        #tosend = self.GetWebPage("example.com")
-        #tosend = self.GetWebPage("eecs.wsu.edu/~hauser/cs455/index.html")
-        #tosend = self.GetWebPage(request.GetStatusLineTuple()[1])
+        # Just ignoring connect requests right now
+        print(request.GetStatusLineTuple())
+        if request.GetStatusLineTuple()[0] == b"CONNECT":
+            print("ignoring")
+            self.CloseConnection(self.client_sock)
 
-        #print("Sending to client: ")
-        #print(str(tosend))
+        self.ForwardRequestToHost(request)
 
-        #self.SendToClient(tosend)
+        data = self.ReceiveResponse()
 
-        #request = self.ReceiveRequest()
+        print(data)
 
-        #tosend =  b"HTTP/1.1 200 OK\r\n"
-        #tosend += b"Connection: keep-alive\r\n\r\n"
+        self.SendTo(self.client_sock, data)
 
         self.CloseConnection(self.client_sock)
 
     def ReceiveRequest(self):
-        # Procedure:
-        # Call recv to get initial data
-        # Find content-length header (it may not exist) to determine if
-        # you should continue receiving.
-        # If no content-length header: see here for details: http://www.w3.org/Protocols/rfc2616/rfc2616-sec4.html#sec4.4
         data = self.RecvFrom(self.client_sock)
         request = ParsedRequestMessage(data)
 
         return request
 
+    def ReceiveResponse(self):
+        data = self.RecvFrom(self.server_sock)
+        #response = ParsedResponseMessage(data)
+
+        return data
+        #return response
+
     def SendTo(self, sock, msg):
         sock.send(msg)
 
+    # Receives an http message from a socket
     # Rewrite, taking into account all the ways to receive an http message
     # (http://www.w3.org/Protocols/rfc2616/rfc2616-sec4.html#sec4.4)
     def RecvFrom(self, sock):
+        # Procedure:
+        # Call recv to get initial data
+        # See here for details: http://www.w3.org/Protocols/rfc2616/rfc2616-sec4.html#sec4.4
         data = sock.recv(1024)
 
-        #ParsedRequestMessage.
+        # Grab up until end of headers at least
+        while not data.find(b'\r\n\r\n'):
+            data += sock.recv(1024)
+
+        p = ParsedRequestMessage(data) # Not necessarily a request message. Change this
+        h = p.GetHeadersDict()
+        s = p.GetStatusLineTuple()
+
+        # Some response messages must not have a message body. Check for this here.
+        if p.NoMessageBodyAllowed():
+            return p.GetStatusAndHeaders()
+
+        # If chunked transfer encoding
+        if b'Transfer-Encoding' in h and h[b'Transfer-Encoding'] != b'identity':
+            # ReceiveChunked()
+            return p.GetStatusAndHeaders() # Change this
+
+        # If Content-Length header is present
+        if b'Content-Length' in h:
+            to_recv = int(h[b'Content-Length']) - p.GetMessageBodyLength()
+            while to_recv > 0:
+                newdata = sock.recv(1024)
+                data += newdata
+                to_recv -= len(newdata)
 
         return data
 
@@ -80,38 +108,21 @@ class ProxyServer(threading.Thread):
         sock.close()
 
     def GetWebAddrInfo(self, addr):
+        print("getaddrinfo from", str(addr))
         addrinfo = socket.getaddrinfo(addr, "http", socket.AF_INET, socket.SOCK_STREAM)
         # addrinfo is a list of addrinfos (a 5 tuple). by setting the appropriate params in getaddrinfo you can (hopefully)
         # pare this down to just one
         return addrinfo[0][4]
 
-    # Rewrite or eliminate!
-    def GetWebPage(self, addr):
-        print("Grabbing content from: ", addr)
-        host = None
-        filename = b"/index.html"
-        if addr.find(b"/") != -1:
-            host = addr[:addr.find(b"/")]
-            filename = addr[addr.find(b"/"):]
+    def ForwardRequestToHost(self, request):
+        host = request.GetHeadersDict()[b'Host']
+
+        if b':' in host:
+            addr = self.GetWebAddrInfo(host[0:host.find(b':')])
         else:
-            host = addr
+            addr = self.GetWebAddrInfo(host)
 
-        addr_info = self.GetWebAddrInfo(host)
         self.server_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.server_sock.connect(addr_info)
+        self.server_sock.connect(addr)
 
-        tosend = b"GET "
-        tosend += str.encode(filename)
-        tosend += b" HTTP/1.1\r\n"
-
-        tosend += b"HOST: "
-        tosend += str.encode(host)
-        tosend += b"\r\n\r\n"
-        print("Sending request to webaddress ", host, ":", sep="")
-        print(tosend)
-        self.server_sock.send(tosend)
-
-        msg = self.server_sock.recv(1024*16)
-        #print(msg)
-
-        return msg
+        self.SendTo(self.server_sock, request.GetMessage())
