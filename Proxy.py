@@ -37,13 +37,13 @@ class ProxyServer(threading.Thread):
 
         # Just ignoring connect requests right now
         if request.GetStatusLineTuple()[0] == b"CONNECT":
-            print("CONNECT found. Ignoring")
-            self.CloseConnection(self.client_sock)
-            return
+            print("CONNECT found")
+            return # Ignoring for now
+            self.OpenTunnel(request)
 
         # This should eventually take an additional parameter telling it how to modify
         # the request
-        request = self.ModifyRequest(request)
+        #request = self.ModifyRequest(request)
         #print(request.GetMessage())
 
         print("Sending to host: ")
@@ -61,6 +61,30 @@ class ProxyServer(threading.Thread):
         self.CloseConnection(self.client_sock)
 
         print("\n\n")
+
+    def OpenTunnel(self, request):
+        host = request.GetHeadersDict()[b'Host']
+        addr = self.GetWebAddrInfo(host[0:host.find(b':')])
+        addr = (addr[0], int(host[host.find(b':') + 1:]))
+        self.server_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.server_sock.connect(addr)
+        print(addr)
+
+        ok = b"HTTP/1.1 200 OK\r\n\r\n"
+
+        self.SendTo(self.server_sock, request.GetMessage())
+        self.SendTo(self.client_sock, ok)
+
+        while True:
+            client_data = self.client_sock.recv(4096*16)
+            print("Client data: ", client_data)
+            self.SendTo(self.server_sock, client_data)
+
+            server_data = self.server_sock.recv(4096*16)
+            print("Server data: ", server_data)
+            self.SendTo(self.client_sock, server_data)
+
+        self.CloseConnection(self.client_sock)
 
     def ModifyRequest(self, request):
         headers = request.GetHeadersDict()
@@ -99,7 +123,7 @@ class ProxyServer(threading.Thread):
         data = sock.recv(1024)
 
         # Grab up until end of headers at least
-        while not data.find(b'\r\n\r\n'):
+        while data.find(b'\r\n\r\n') == -1:
             data += sock.recv(1024)
 
         p = ParsedRequestMessage(data) # Not necessarily a request message. Change this
@@ -112,8 +136,8 @@ class ProxyServer(threading.Thread):
 
         # If chunked transfer encoding
         if b'Transfer-Encoding' in h and h[b'Transfer-Encoding'] != b'identity':
-            # ReceiveChunked()
-            return p.GetStatusAndHeaders() # Change this
+            self.ReceiveChunked(sock, data)
+            #return p.GetStatusAndHeaders() # Change this
 
         # If Content-Length header is present
         if b'Content-Length' in h:
@@ -124,6 +148,80 @@ class ProxyServer(threading.Thread):
                 to_recv -= len(newdata)
 
         return data
+
+    def ReceiveChunked(self, sock, data):
+        print("chunked transfer encoding detected")
+        print("chunked message: ", data)
+        # Procedure: see (http://www.w3.org/Protocols/rfc2616/rfc2616-sec19.html#sec19.4.6)
+        # Keep in mind data consists of both the headers and part (or possibly no part) of the first chunk at this point
+
+        length = 0
+        entity_body = b""
+
+        headers = data[0:data.find(b"\r\n\r\n")]
+        first_chunk = data[data.find(b"\r\n\r\n") + 4:]
+        chunk_size = self.GetChunkSize(first_chunk)
+        #print("chunk_size: ", chunk_size)
+        first_chunk_data = first_chunk[first_chunk.find(b'\r\n') + 4:]
+        #print("first_chunk_data: ", first_chunk_data)
+
+        # Finish reading first chunk
+        msg = self.RecvLen(sock, chunk_size - len(first_chunk_data))
+        entity_body = first_chunk_data + msg
+
+        length += len(entity_body)
+
+        print("entity_body: ", entity_body, sep="\n")
+        print("length of entity body: ", length, sep="\n")
+
+        # Start of procedure from link above
+        rcvd = self.RecvUntil(sock, b'\r\n')
+        chunk_size = self.GetChunkSize(rcvd)
+
+        # This grabs all the chunks until the last chunk (which has size 0) comes along
+        while chunk_size > 0:
+            print("Receiving: ", chunk_size + 4, "bytes")
+
+            rcvd = self.RecvLen(sock, chunk_size + 4)
+
+            entity_body += rcvd
+            length += chunk_size
+
+            rcvd = self.RecvUntil(sock, b'\r\n')
+            chunk_size = self.GetChunkSize(rcvd)
+
+        # Grab trailer (which consists of more headers)
+        trailer = self.RecvUntil(b'\r\n\r\n')
+        headers += rcvd
+
+        print("headers: ", headers)
+        print("entity_body: ", entity_body)
+        print("body length: ", length)
+
+        return
+
+    def RecvLen(self, sock, length):
+        print("Receiving", length, "bytes")
+        rcvd = b""
+        while length > 0:
+            temp = sock.recv(length)
+            length -= len(rcvd)
+            rcvd += temp
+
+        return rcvd
+
+    def RecvUntil(self, sock, pattern):
+        print("Receiving until: ", pattern)
+        rcvd = b""
+        while rcvd.find(pattern) == -1:
+            rcvd += sock.recv(1)
+
+        return rcvd
+
+    def GetChunkSize(self, chunk):
+        print("chunk being sized: ", chunk)
+        chunk_size = int(chunk[0:chunk.find(b'\r\n')], 16)
+        return chunk_size
 
     def CloseConnection(self, sock):
         sock.shutdown(socket.SHUT_RDWR)
@@ -140,8 +238,11 @@ class ProxyServer(threading.Thread):
 
         if b':' in host:
             addr = self.GetWebAddrInfo(host[0:host.find(b':')])
+            addr = (addr[0], int(host[host.find(b':') + 1:]))
         else:
             addr = self.GetWebAddrInfo(host)
+
+        print("addr: ", addr)
 
         self.server_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.server_sock.connect(addr)
