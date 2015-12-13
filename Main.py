@@ -23,7 +23,7 @@ def main():
         try:
             s.listen(1)
             outsock, addr = s.accept()
-            print("Connected to: ", addr)
+            #print("Connected to: ", addr)
 
             b = ProxyServer(outsock, addr)
             #b.daemon = True

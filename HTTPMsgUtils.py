@@ -36,6 +36,17 @@ def ParseStatusLine(status):
     # s[2]: reason-phrase
     return s[0], s[1], s[2]
 
+def HeadersDictToString(headers_dict):
+    s = b""
+    for k in headers_dict.keys():
+        if isinstance(headers_dict[k], list):
+            s += k + b": " + b",".join(headers_dict[k]) + b"\r\n"
+        else:
+            s += k + b": " + headers_dict[k] + b"\r\n"
+
+    s += b"\r\n"
+    return s
+
 class HTTPMessage():
     def __init__(self, status_tuple, headers_dict, body):
         self.status_tuple = status_tuple
