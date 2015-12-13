@@ -73,11 +73,11 @@ class ParsedRequestMessage():
         try:
             self.status_and_headers = s[0]
         except:
-            self.status_and_headers = ""
+            self.status_and_headers = b""
         try:
             msg = s[1]
         except:
-            msg = ""
+            msg = b""
 
         self.status = self.status_and_headers[0:self.status_and_headers.find(b"\r\n")]
         self.headers = self.status_and_headers[self.status_and_headers.find(b"\r\n") + 2:]
@@ -115,6 +115,27 @@ class ParsedRequestMessage():
             return len(self.body)
         else:
             return 0
+
+    def GetStatusAsString(self):
+        s = self.GetStatusLineTuple()
+        return s[0] + b" " + s[1] + b" " + s[2] + b"\r\n"
+
+    def GetHeadersAsString(self):
+        s = b""
+        for k in self.headers_dict.keys():
+            if isinstance(self.headers_dict[k], list):
+                s += k + b": " + b",".join(self.headers_dict[k]) + b"\r\n"
+            else:
+                s += k + b": " + self.headers_dict[k] + b"\r\n"
+
+        s += b"\r\n"
+        return s
+
+    def GetMessageBody(self):
+        return self.body
+
+    def Build(self):
+        return self.GetStatusAsString() + self.GetHeadersAsString() + self.GetMessageBody()
 
 """
 # You can pull request messages from Request.txt for testing purposes

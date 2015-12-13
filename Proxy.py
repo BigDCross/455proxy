@@ -36,20 +36,42 @@ class ProxyServer(threading.Thread):
         print(str(request.GetMessage()))
 
         # Just ignoring connect requests right now
-        print(request.GetStatusLineTuple())
         if request.GetStatusLineTuple()[0] == b"CONNECT":
-            print("ignoring")
+            print("CONNECT found. Ignoring")
             self.CloseConnection(self.client_sock)
+            return
+
+        # This should eventually take an additional parameter telling it how to modify
+        # the request
+        request = self.ModifyRequest(request)
+        #print(request.GetMessage())
+
+        print("Sending to host: ")
+        print(request.GetMessage())
 
         self.ForwardRequestToHost(request)
 
         data = self.ReceiveResponse()
 
+        print("Response received:")
         print(data)
 
         self.SendTo(self.client_sock, data)
 
         self.CloseConnection(self.client_sock)
+
+        print("\n\n")
+
+    def ModifyRequest(self, request):
+        headers = request.GetHeadersDict()
+        if b'Connection' in headers:
+            headers[b'Connection'] = b'close'
+        if b'Proxy-Connection' in headers:
+            headers.pop(b'Proxy-Connection')
+
+        request.headers_dict = headers
+
+        return ParsedRequestMessage(request.Build())
 
     def ReceiveRequest(self):
         data = self.RecvFrom(self.client_sock)
@@ -68,8 +90,8 @@ class ProxyServer(threading.Thread):
         sock.send(msg)
 
     # Receives an http message from a socket
-    # Rewrite, taking into account all the ways to receive an http message
-    # (http://www.w3.org/Protocols/rfc2616/rfc2616-sec4.html#sec4.4)
+    # Still does not take into account all the ways to receive an http message
+    # See here: (http://www.w3.org/Protocols/rfc2616/rfc2616-sec4.html#sec4.4)
     def RecvFrom(self, sock):
         # Procedure:
         # Call recv to get initial data
@@ -108,7 +130,6 @@ class ProxyServer(threading.Thread):
         sock.close()
 
     def GetWebAddrInfo(self, addr):
-        print("getaddrinfo from", str(addr))
         addrinfo = socket.getaddrinfo(addr, "http", socket.AF_INET, socket.SOCK_STREAM)
         # addrinfo is a list of addrinfos (a 5 tuple). by setting the appropriate params in getaddrinfo you can (hopefully)
         # pare this down to just one
