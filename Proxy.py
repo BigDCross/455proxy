@@ -52,7 +52,7 @@ class ProxyServer(threading.Thread):
                 #request = self.ModifyRequest(request)
                 #print(request.GetMessage())
 
-                #print("Request")
+                print("Request")
                 #print(request.GetMessage())
                 print(request.GetStatusAndHeaders())
 
@@ -60,7 +60,7 @@ class ProxyServer(threading.Thread):
 
                 data = self.ReceiveResponse()
 
-                #print("Response")
+                print("Response")
                 print(data[0:data.find(b'\r\n\r\n')])
 
                 self.SendTo(self.client_sock, data)
@@ -125,11 +125,16 @@ class ProxyServer(threading.Thread):
         # Call recv to get initial data
         # See here for details: http://www.w3.org/Protocols/rfc2616/rfc2616-sec4.html#sec4.4
 
+        data = self.RecvUntil(sock, b'\r\n\r\n')
+
+
+        '''
         data = self.Recv(sock, 1024)
 
         # Grab up until end of headers at least
         while data.find(b'\r\n\r\n') == -1:
             data += self.Recv(sock, 1024)
+        '''
 
         p = ParsedRequestMessage(data) # Not necessarily a request message. Change this
         h = p.GetHeadersDict()
@@ -173,21 +178,44 @@ class ProxyServer(threading.Thread):
         entity_body = b""
 
         headers = data[0:data.find(b"\r\n\r\n")]
+        '''
         first_chunk = data[data.find(b"\r\n\r\n") + 4:]
         #print("headers: ", headers)
         #print("first_chunk: ", first_chunk)
+        '''
+        
+        #if not read the first chunk size
+        #if first_chunk.find(b'\r\n') == -1
+        #    rcvd = self.RecvUntil(sock, b'\r\n')
+        #    data+=rcvd
+        #    first_chunk = data[data.find(b"\r\n\r\n") + 4:]
+            
+        '''
         chunk_size = self.GetChunkSize(first_chunk)
         #print("chunk_size: ", chunk_size)
         first_chunk_data = first_chunk[first_chunk.find(b'\r\n') + 2:]
         #print("first_chunk_data: ", first_chunk_data)
+        '''
 
-        # Finish reading first chunk
+        
+        '''
+        current_index = first_chunk.find(b'\r\n') + chunk_size
+        if current_index < len(data)
+            while len(first_chunk)> current_index
+                sub_chunk_data = first_chunk_data[current_index:]
+                first_chunk = first_chunk[first_chunk.find('\r\n') 
+                temp_chunk = 
+        '''
+
+        '''
+        # Finish reading remind chunk
         msg = self.RecvLen(sock, chunk_size - len(first_chunk_data))
         entity_body = first_chunk_data + msg
         self.RecvLen(sock, 2) # Each chunk ends with CRLF so read this and throw it away
 
         length = len(entity_body)
 
+        '''
         #print("entity_body: ", entity_body)
         #print("length of entity body: ", length)
 
@@ -276,7 +304,9 @@ class ProxyServer(threading.Thread):
 
     def GetChunkSize(self, chunk):
         #print("In GetChunkSize: ", chunk)
+        #print("Count GetChunkSize: ", chunk[0:chunk.find(b'\r\n')])
         chunk_size = int(chunk[0:chunk.find(b'\r\n')], 16)
+        #print("ChunkSize: ", chunk_size)
         return chunk_size
 
     def CloseConnection(self, sock):

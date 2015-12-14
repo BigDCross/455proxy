@@ -1,20 +1,14 @@
-Running:
-To test the proxy out run Main.py (using python3)
-then set up the appropriate proxy settings in your webbrowser
+Create by dustin crossman, ruofei xu, and bishu das
 
-TODO:
-- Parse argv for host, port, and other config options (easy)
-- Recv better. HTTP messages have no end-of-msg marker. You must
-    instead parse the headers (that is, until '\r\n\r\n' is found)
-    then use the Content-Length header (or handle chunked encoding)
-    to recv the rest of the message. (hard)
-- Work on parsing and building HTTP messages. There is some basic
-    functionality in HTTP_Utils. (tricky I suspect)
-- Figure out how the client is supposed to send the initial request.
-    Maybe send a page with an input box for a URL?
-    (ANSWER: I should have read better. You set up your web browser to use a proxy
-     via its settings. The user will not have to manually type in url in an input box
-     or anything like that)
-- Error checking. This is super important.
-- Error checking. This is super important.
-- Did I mention error checking?
+Usage: ./Main.py
+
+Configuration of Browser:
+Firefox:
+1.Click firefox menu
+2.Click Preference
+3.Select Advanced on the right side
+4.Select Network on the top
+5.Click Setting
+6.Choose Manual proxy configuration
+7.Set HTTP Proxy to 127.0.0.1
+8.Set Port to 5006
